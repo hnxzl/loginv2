@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final String username;
 
   ProfileScreen({required this.username});
 
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late TextEditingController usernameController;
   final TextEditingController emailController = TextEditingController(text: "contohemail@gmail.com");
   final TextEditingController phoneController = TextEditingController(text: "+62 123 123 123");
+  bool isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    usernameController = TextEditingController(text: widget.username);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +39,30 @@ class ProfileScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             TextField(
-              controller: TextEditingController(text: username),
+              controller: usernameController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person, color: Theme.of(context).primaryColor),
                 labelText: 'Username',
                 filled: true,
                 fillColor: Colors.white,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    isEditing ? Icons.check : Icons.edit,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isEditing = !isEditing;
+                      if (!isEditing) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Username updated successfully')),
+                        );
+                      }
+                    });
+                  },
+                ),
               ),
-              readOnly: true,  
+              readOnly: !isEditing,
             ),
             SizedBox(height: 8),
             TextField(
@@ -64,7 +93,8 @@ class ProfileScreen extends StatelessWidget {
               },
               child: Text('Edit Profile'),
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColor,
               ),
             ),
             SizedBox(height: 16),
@@ -79,7 +109,8 @@ class ProfileScreen extends StatelessWidget {
               },
               child: Text('Exit'),
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Theme.of(context).primaryColor, 
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColor,
               ),
             ),
           ],
